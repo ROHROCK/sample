@@ -1,0 +1,21 @@
+---
+- hosts: mycluster
+  gather_facts: false
+  any_errors_fatal: true
+  tasks:
+  - name: Facters
+    veritas_infoscale:
+     module: site_facters
+    register: facts
+  - name: Install InfoScale 
+    veritas_infoscale:
+     module: yum
+     repository_name: <RepositoryName>
+     repository_baseurl: <RepositoryBaseURL>
+     gpgcheck: 1
+     gpgkey: http://xx.xxx.xxx.xx/rpms/RPM-GPG-KEY-veritas-infoscale7
+     product: ENTERPRISE
+     product_version: 7.4.2
+     facters: "{{ groups['all'] |map('extract', hostvars, ['facts','infoscale_facts'])| select()|list }}"
+     state: present
+
